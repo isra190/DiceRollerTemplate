@@ -1,43 +1,105 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <!-- Recommended meta tags -->
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=480">
+    <link rel="stylesheet" type="text/css" href="looks.css">
 
-        <!-- PyScript CSS -->
-        <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
-        <link rel="stylesheet" href="./style.css">
+    <!-- PyScript CSS and core.js -->
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
 
-        <!-- This script tag bootstraps PyScript -->
-        <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+    <!-- Loading Screen JavaScript -->
+    <script type="module">
+        const loading = document.getElementById("loading");
+        addEventListener("py:ready", () => loading.close());
+        loading.showModal();
+    </script>
 
-        <!-- loading screen JavaScript closes the loading dialog when python is ready -->
-        <script type="module">
-            const loading = document.getElementById("loading")
-            addEventListener("py:ready", () => loading.close())
-            loading.showModal()
-        </script>
+    <title>Web Dice Roller</title>
+</head>
+<body onload="loady()">
+    <dialog id="loading"><h1>Loading python environment...</h1></dialog>
 
+    <div class="outer">
+        <div id="control">
+            <input type="number" step="1" id="num" value="3" maxlength="3" size="1"> d
+            <input type="number" step="1" id="die" value="6" maxlength="3" size="1">
+            <button id="roll" onclick="rollem()">Roll</button>
+        </div>
 
-        <!-- webpage title (shows in browser tab) -->
-        <title>Pyscript Web Dice Roller</title>
-    </head>
+        <!-- Die Faces -->
+        <span id="4" onclick="dieClick(4)"></span>
+        <span id="6" onclick="dieClick(6)"></span>
+        <span id="8" onclick="dieClick(8)"></span>
+        <span id="10" onclick="dieClick(10)"></span>
+        <span id="12" onclick="dieClick(12)"></span>
+        <span id="20" onclick="dieClick(20)"></span>
 
-    <body>
-        <dialog id="loading"><h1>Loading python environment...</h1></dialog>
-        <!-- Start of your code -->
+        <div id="output"></div>
+    </div>
 
+    <!-- Embedding the JavaScript functionality -->
+    <script type="text/javascript">
+        const dieFace = {
+            4: '<svg width="50" height="50"><polygon points="0,3 25,46 50,3" style="stroke: black; fill: none" /><text fill="black" x="20" y="26" font-family="Verdana" font-size="18">REPLACEMENT</text></svg>',
+            6: '<svg width="50" height="50"><polygon points="3,3 3,47 47,47 47,3" style="stroke: black; fill: none" /><text fill="black" x="20" y="30" font-family="Verdana" font-size="18">REPLACEMENT</text></svg>',
+            8: '<svg width="60" height="50"><polygon points="17,0 60,25 17,50 17,0 0,25 17,50" style="stroke: black; fill: none" /><text fill="black" x="25" y="30" font-family="Verdana" font-size="18">REPLACEMENT</text></svg>',
+            10: '<svg width="50" height="50"><polygon points="43,50 0,25 43,0 50,25" style="stroke: black; fill: none" /><text fill="black" x="20" y="30" font-family="Verdana" font-size="18">REPLACEMENT</text></svg>',
+            12: '<svg width="50" height="50"><polygon points="25,0 1,17 10,45 40,45 49,17" style="stroke: black; fill: none" /><text fill="black" x="13" y="30" font-family="Verdana" font-size="18">REPLACEMENT</text></svg>',
+            20: '<svg width="50" height="50"><polygon points="0,46 25,0 50,46" style="stroke: black; fill: none" /><text fill="black" x="13" y="40" font-family="Verdana" font-size="18">REPLACEMENT</text></svg>',
+            'other': '<svg width="50" height="50"><circle cx="25" cy="25" r="20" style="stroke: black; fill: none" /><text fill="black" x="13" y="31" font-family="Verdana" font-size="18">REPLACEMENT</text></svg>'
+        };
 
+        function rollem() {
+            let total = 0;
+            const n = document.getElementById('num').value;
+            const d = document.getElementById('die').value;
+            const o = document.getElementById('output');
+            let p = o.innerHTML;
 
+            const face = (d in dieFace) ? dieFace[d] : dieFace['other'];
 
+            if (p !== '') {
+                p = p.concat("<hr>");
+            } else {
+                p = p.concat('<button id="clear" onclick="clearme()" style="float:right;">Clear</button>');
+            }
 
+            for (let i = 0; i < n; i++) {
+                const r = Math.ceil(Math.random() * d);
+                total += r;
+                p = p.concat("<span> " + face.replace('REPLACEMENT', r.toString()) + " </span>");
+            }
+            p += " Total: " + total;
+            o.innerHTML = p;
+        }
 
+        function clearme() {
+            const o = document.getElementById('output');
+            o.innerHTML = "";
+        }
 
+        function loady() {
+            for (const f in dieFace) {
+                const e = document.getElementById(f);
+                if (e) e.innerHTML = dieFace[f].replace("REPLACEMENT", f);
+            }
+        }
 
+        function dieClick(whatzis) {
+            const n = document.getElementById('num');
+            const d = document.getElementById('die');
+            if (whatzis.id === d.value) {
+                n.value = Number(n.value) + 1;
+            } else {
+                n.value = 1;
+                d.value = whatzis.id;
+            }
+        }
+    </script>
 
-
-        <!-- End of your code -->
-        <script type="py" src="main.py" config="./pyscript.json"></script>
-    </body>
+    <!-- PyScript Configuration -->
+    <script type="py" src="main.py" config="./pyscript.json"></script>
+</body>
 </html>

@@ -1,6 +1,23 @@
 {
-  "name": "DiceRollerWeb",
-  "files": {
-    "./dice.py": "dice.py"
+  "config": {
+    "name": "DiceRollerWeb",
+    "files": {
+      "./dice.py": "dice.py"
+    }
+  },
+  "dieFace": {
+    "4": "<svg width='50' height='50'><polygon points='0,3 25,46 50,3' style='stroke: black; fill: none' /><text fill='black' x='20' y='26' font-family='Verdana' font-size='18'>REPLACEMENT</text></svg>",
+    "6": "<svg width='50' height='50'><polygon points='3,3 3,47 47,47 47,3' style='stroke: black; fill: none' /><text fill='black' x='20' y='30' font-family='Verdana' font-size='18'>REPLACEMENT</text></svg>",
+    "8": "<svg width='60' height='50'><polygon points='17,0 60,25 17,50 17,0 0,25 17,50' style='stroke: black; fill: none' /><text fill='black' x='25' y='30' font-family='Verdana' font-size='18'>REPLACEMENT</text></svg>",
+    "10": "<svg width='50' height='50'><polygon points='43,50 0,25 43,0 50,25' style='stroke: black; fill: none' /><text fill='black' x='20' y='30' font-family='Verdana' font-size='18'>REPLACEMENT</text></svg>",
+    "12": "<svg width='50' height='50'><polygon points='25,0 1,17 10,45 40,45 49,17' style='stroke: black; fill: none' /><text fill='black' x='13' y='30' font-family='Verdana' font-size='18'>REPLACEMENT</text></svg>",
+    "20": "<svg width='50' height='50'><polygon points='0,46 25,0 50,46' style='stroke: black; fill: none' /><text fill='black' x='13' y='40' font-family='Verdana' font-size='18'>REPLACEMENT</text></svg>",
+    "other": "<svg width='50' height='50'><circle cx='25' cy='25' r='20' style='stroke: black; fill: none' /><text fill='black' x='13' y='31' font-family='Verdana' font-size='18'>REPLACEMENT</text></svg>"
+  },
+  "scripts": {
+    "rollem": "function rollem() { let total = 0; const n = document.getElementById('num').value; const d = document.getElementById('die').value; const o = document.getElementById('output'); let p = o.innerHTML; const face = (d in dieFace) ? dieFace[d] : dieFace['other']; if (p !== '') { p = p.concat('<hr>'); } else { p = p.concat('<button id=\"clear\" onclick=\"clearme()\" style=\"float:right;\">Clear</button>'); } for (let i = 0; i < n; i++) { const r = Math.ceil(Math.random() * d); total += r; p = p.concat('<span> ' + face.replace('REPLACEMENT', r.toString()) + ' </span>'); } p += ' Total: ' + total; o.innerHTML = p; }",
+    "clearme": "function clearme() { const o = document.getElementById('output'); o.innerHTML = ''; }",
+    "loady": "function loady() { for (const f in dieFace) { const e = document.getElementById(f); if (e) e.innerHTML = dieFace[f].replace('REPLACEMENT', f); } }",
+    "dieClick": "function dieClick(whatzis) { const n = document.getElementById('num'); const d = document.getElementById('die'); if (whatzis.id === d.value) { n.value = Number(n.value) + 1; } else { n.value = 1; d.value = whatzis.id; } }"
   }
 }

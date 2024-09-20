@@ -1,0 +1,26 @@
+input {
+    border-style: none;
+    border-bottom-style: solid;
+    border-width: thin;
+}
+
+div {
+    border: solid thin black;
+    margin: 0.5em;
+    padding: 0.5em;
+    border-radius: 1em;
+    background: Green;
+}
+
+
+
+.outer {
+    margin: auto;
+    max-width: 5000px;
+    height: 4000px;
+    background: rgb(45, 99, 136);
+}
+
+@viewport {
+    width: 900px;
+}
